@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BES xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BES.xsd">
+	<Fixlet>
+		<Title>Delete Orphaned Zoom files in Users' Roaming Profiles</Title>
+		<Description><![CDATA[&lt;enter a description of the problem and the corrective action here&gt; ]]></Description>
+		<Relevance>name of operating system contains "Win"</Relevance>
+		<Relevance>exists files "Zoom.exe" of folders "AppData\Roaming\Zoom\bin" of folders of folder "C:\Users"</Relevance>
+		<Category></Category>
+		<Source>Internal</Source>
+		<SourceID></SourceID>
+		<SourceReleaseDate>2024-08-28</SourceReleaseDate>
+		<SourceSeverity></SourceSeverity>
+		<CVENames></CVENames>
+		<SANSID></SANSID>
+		<MIMEField>
+			<Name>x-fixlet-modification-time</Name>
+			<Value>Thu, 29 Aug 2024 19:14:00 +0000</Value>
+		</MIMEField>
+		<Domain>BESC</Domain>
+		<DefaultAction ID="Action1">
+			<Description>
+				<PreLink>Click </PreLink>
+				<Link>here</Link>
+				<PostLink> to deploy this action.</PostLink>
+			</Description>
+			<ActionScript MIMEType="application/x-Fixlet-Windows-Shell"><![CDATA[// Remove existing Windows zoom_remove.bat file if it exists
+delete zoom_remove.bat
+
+//Iniitate creation of new zoom_remove.bat file
+createfile until _end_
+
+//disable echo
+@ECHO OFF
+
+//change directory to c:\users, interate through every user profile folder, and remove any AppData\Roamiing\Zoom directorsies and their file and subdirectory contents.
+cd /d "c:\users"
+for /d %%a in (*) do rd /s /q "c:\users\%%a\AppData\Roaming\Zoom" >nul 2>&1
+
+// End the creation of the zoom_remove.bat file
+_end_
+
+// Rename the __createfile to remove.bat
+move __createfile zoom_remove.bat
+
+//Execute zoom_remove.nat file silently, waiting for it to complete
+override wait
+hidden=true
+completion=job
+wait zoom_remove.bat]]></ActionScript>
+			<SuccessCriteria Option="OriginalRelevance"></SuccessCriteria>
+		</DefaultAction>
+	</Fixlet>
+</BES>
